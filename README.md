@@ -1,12 +1,6 @@
 # sungaisulu_store_inventory
 Laravel inventory system for convenience store - Group Project
 
-
-```markdown
-# Sungai Sulu Convenience Store
-
-## Developer Setup
-
 ### 1. Import Database
 - File location: `/database/convenience_store.sql`
 - Import into MySQL database named `convenience_store`
