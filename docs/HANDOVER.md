@@ -49,8 +49,8 @@ SELECT
 FROM products p
 LEFT JOIN stock_movements sm ON sm.product_id = p.product_id
 GROUP BY p.product_id;
-
-###Monthly Report
+```
+### Monthly Report
 ```sql
 SELECT 
     p.product_id,
@@ -61,31 +61,31 @@ SELECT
 FROM products p
 LEFT JOIN stock_movements sm ON sm.product_id = p.product_id
 GROUP BY p.product_id;
-
-###Add Stock (Admin)
+```
+### Add Stock (Admin)
 ```sql
 INSERT INTO stock_movements (product_id, user_id, quantity, type, created_at)
 VALUES (?, ?, ?, 'in', NOW());
-
-###Sell Product (Employee/Admin)
+```
+### Sell Product (Employee/Admin)
 ```sql
 INSERT INTO stock_movements (product_id, user_id, quantity, type, created_at)
 VALUES (?, ?, ?, 'out', NOW());
-
-###Add Employee
+```
+### Add Employee
 ```sql
 INSERT INTO users (full_name, phone, address, role, employee_id, password)
 VALUES (?, ?, ?, 'employee', ?, NULL);
-
-###Update Employee (phone + address only)
+```
+### Update Employee (phone + address only)
 ```sql
 UPDATE users SET phone = ?, address = ? WHERE user_id = ? AND role = 'employee';
-
-###Delete Employee
+```
+### Delete Employee
 ```sql
 DELETE FROM users WHERE user_id = ? AND role = 'employee';
-
-###Add Product (with new category option)
+```
+### Add Product (with new category option)
 ```sql
 -- If new category:
 INSERT INTO categories (category_name) VALUES (?);
@@ -93,3 +93,4 @@ INSERT INTO categories (category_name) VALUES (?);
 INSERT INTO products (product_name, price, category_id, min_stock) VALUES (?, ?, ?, ?);
 -- Then add initial stock
 INSERT INTO stock_movements (product_id, user_id, quantity, type, created_at) VALUES (?, ?, ?, 'in', NOW());
+```
