@@ -18,7 +18,6 @@ return new class extends Migration
             ->constrained('categories')
             ->nullOnDelete();
 
-        $table->integer('stock')->default(0);
         $table->integer('min_stock')->default(0);
 
         $table->timestamps();
