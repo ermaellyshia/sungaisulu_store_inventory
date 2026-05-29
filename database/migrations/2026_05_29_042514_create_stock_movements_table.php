@@ -6,28 +6,33 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-   public function up(): void
-{
-    Schema::create('stock_movements', function (Blueprint $table) {
-        $table->id();
+    public function up(): void
+    {
+        Schema::create('stock_movements', function (Blueprint $table) {
+            $table->id();
 
-        $table->foreignId('product_id')
-            ->constrained('products')
-            ->cascadeOnDelete();
+            $table->foreignId('product_id')
+                ->constrained('products')
+                ->cascadeOnDelete();
 
-        $table->foreignId('user_id')
-            ->constrained('users')
-            ->cascadeOnDelete();
+            $table->foreignId('user_id')
+                ->constrained('users')
+                ->cascadeOnDelete();
 
-        $table->enum('type', ['in', 'out']);
-        $table->integer('quantity');
+            $table->enum('type', ['in', 'out']);
+            $table->integer('quantity');
 
-        $table->timestamps();
-    });
-}
+            $table->timestamps();
 
-public function down(): void
-{
-    Schema::dropIfExists('stock_movements');
-}
+            $table->index(['product_id']);
+            $table->index(['user_id']);
+            $table->index(['type']);
+            $table->index(['created_at']);
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('stock_movements');
+    }
 };
