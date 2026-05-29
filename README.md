@@ -1,3 +1,23 @@
+# sungaisulu_store_inventory
+Laravel inventory system for convenience store - Group Project
+
+### 1. Import Database
+- File location: `/database/convenience_store.sql`
+- Import into MySQL database named `convenience_store`
+
+### 2. Read Handover Document
+- Full documentation: `/docs/HANDOVER.md`
+- Contains: Authentication rules, stock logic, all SQL queries
+
+### 3. Default Logins
+- Admin: user_id=1, password=admin123
+- Employee: employee_id=EMP001 (no password)
+- Employee: employee_id=EMP002 (no password)
+
+### 4. Key Rules
+- Current stock = SUM(quantity) FROM stock_movements
+- Positive quantity = stock in | Negative quantity = stock out
+
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">
