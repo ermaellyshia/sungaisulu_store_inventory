@@ -25,4 +25,14 @@ class Product extends Model
     {
         return $this->hasMany(StockMovement::class, 'product_id');
     }
+    
+    public function transactionItems()
+    {
+        return $this->hasMany(TransactionItem::class);
+    }
+    
+    public function isLowStock()
+    {
+        return $this->stock <= $this->min_stock;
+    }
 }

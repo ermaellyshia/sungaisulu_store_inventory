@@ -3,14 +3,12 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
     /**
@@ -23,6 +21,7 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'phone',
     ];
 
     /**
@@ -36,31 +35,27 @@ class User extends Authenticatable
     ];
 
     /**
-     * Check if user is an admin.
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
      */
-    public function isAdmin(): bool
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+    ];
+    
+    public function isAdmin()
     {
         return $this->role === 'admin';
     }
-
-    /**
-     * Check if user is an employee.
-     */
-    public function isEmployee(): bool
+    
+    public function isEmployee()
     {
         return $this->role === 'employee';
     }
-
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
+    
+    public function transactions()
     {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
+        return $this->hasMany(Transaction::class);
     }
 }
