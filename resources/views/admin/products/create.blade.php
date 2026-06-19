@@ -19,10 +19,12 @@
         
         <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6">Product Information</h2>
         
-        <form method="POST" action="{{ route('admin.products.store') }}" id="productForm">
+        <!-- FORM - TAMBAH enctype="multipart/form-data" -->
+        <form method="POST" action="{{ route('admin.products.store') }}" enctype="multipart/form-data">
             @csrf
             
             <div class="space-y-5">
+                
                 <!-- Product Name -->
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
@@ -59,9 +61,9 @@
                     </label>
                     <select name="category_id" id="category_id"
                             class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-gray-900 text-gray-800 dark:text-white">
-                        <option value="">Select Category</option>
-                        @foreach($categories ?? [] as $category)
-                            <option value="{{ $category->id }}">{{ $category->name }}</option>
+                        <option value="">-- Select Category --</option>
+                        @foreach($categories as $category)
+                            <option value="{{ $category->id }}">{{ $category->category_name }}</option>
                         @endforeach
                     </select>
                     @error('category_id')
@@ -69,7 +71,7 @@
                     @enderror
                 </div>
                 
-                <!-- Stock & Min Stock (2 columns) -->
+                <!-- Stock & Min Stock -->
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
@@ -94,6 +96,21 @@
                             <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                         @enderror
                     </div>
+                </div>
+                
+                <!-- ======================== -->
+                <!-- PRODUCT PICTURE (NEW)     -->
+                <!-- ======================== -->
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                        Product Picture
+                    </label>
+                    <input type="file" name="product_picture" id="product_picture" accept="image/*"
+                           class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-gray-900 text-gray-800 dark:text-white">
+                    <p class="text-xs text-gray-500 mt-1">Max 2MB. Supported: jpeg, png, jpg, gif</p>
+                    @error('product_picture')
+                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
                 
                 <!-- Preview Section -->
@@ -132,21 +149,31 @@
     const productName = document.getElementById('product_name');
     const price = document.getElementById('price');
     const stock = document.getElementById('stock');
-    const category = document.getElementById('category_id');
-    const categories = @json($categories ?? []);
+    const categorySelect = document.getElementById('category_id');
+    
+    const categories = @json($categories->map(function($cat) {
+        return ['id' => $cat->id, 'name' => $cat->name];
+    }));
     
     function updatePreview() {
-        document.getElementById('preview_name').textContent = productName.value || '-';
-        document.getElementById('preview_price').textContent = 'RM ' + (parseFloat(price.value) || 0).toFixed(2);
-        document.getElementById('preview_stock').textContent = 'Stock: ' + (stock.value || 0);
+        const name = productName.value || '-';
+        const priceValue = parseFloat(price.value) || 0;
+        const stockValue = stock.value || 0;
         
-        const selectedCat = categories.find(c => c.id == category.value);
-        document.getElementById('preview_category').textContent = selectedCat ? selectedCat.name : '-';
+        const selectedCat = categories.find(c => c.id == categorySelect.value);
+        const categoryName = selectedCat ? selectedCat.name : '-';
+        
+        document.getElementById('preview_name').textContent = name;
+        document.getElementById('preview_category').textContent = categoryName;
+        document.getElementById('preview_price').textContent = 'RM ' + priceValue.toFixed(2);
+        document.getElementById('preview_stock').textContent = 'Stock: ' + stockValue;
     }
     
     productName.addEventListener('input', updatePreview);
     price.addEventListener('input', updatePreview);
     stock.addEventListener('input', updatePreview);
-    category.addEventListener('change', updatePreview);
+    categorySelect.addEventListener('change', updatePreview);
+    
+    updatePreview();
 </script>
 @endsection

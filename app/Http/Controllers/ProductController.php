@@ -34,11 +34,18 @@ class ProductController extends Controller
             'category_id' => 'nullable|exists:categories,id',
             'stock' => 'required|integer',
             'min_stock' => 'required|integer',
+            'product_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // TAMBAH INI
         ]);
 
-        $product = Product::create($validated);
+        // Upload gambar kalau ada
+        if ($request->hasFile('product_picture')) {
+            $path = $request->file('product_picture')->store('products', 'public');
+            $validated['product_picture'] = $path;
+        }
+        
+        Product::create($validated);
 
-         return redirect()->route('admin.products')->with('success', 'Product created successfully');
+        return redirect()->route('admin.products')->with('success', 'Product created successfully');
     }
 
     public function update(Request $request, $id)
@@ -51,7 +58,18 @@ class ProductController extends Controller
             'category_id' => 'nullable|exists:categories,id',
             'stock' => 'sometimes|integer',
             'min_stock' => 'sometimes|integer',
+            'product_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // TAMBAH INI
         ]);
+
+        // Upload gambar baru kalau ada
+        if ($request->hasFile('product_picture')) {
+            // Hapus gambar lama kalau ada
+            if ($product->product_picture) {
+                \Storage::disk('public')->delete($product->product_picture);
+            }
+            $path = $request->file('product_picture')->store('products', 'public');
+            $validated['product_picture'] = $path;
+        }
 
         $product->update($validated);
 
@@ -61,6 +79,12 @@ class ProductController extends Controller
     public function destroy($id)
     {
         $product = Product::findOrFail($id);
+
+        // Hapus gambar kalau ada
+        if ($product->product_picture) {
+            \Storage::disk('public')->delete($product->product_picture);
+        }
+
         $product->delete();
 
         return redirect()->route('admin.products')->with('success', 'Product deleted successfully');
