@@ -68,7 +68,9 @@ Route::get('/api/reports', [TransactionController::class, 'getReports']);
 */
 Route::middleware(['auth'])->group(function () {
 
-    // Admin Routes
+    // ============================================
+    // ADMIN ROUTES
+    // ============================================
     Route::middleware('role:admin')->prefix('admin')->group(function () {
 
         // Dashboard
@@ -78,12 +80,12 @@ Route::middleware(['auth'])->group(function () {
             $totalEmployees = User::where('role', 'employee')->count();
             $totalStockValue = Product::sum(DB::raw('stock * price'));
             $lowStockProducts = Product::whereRaw('stock <= min_stock')->get();
-            
+
             return view('admin.dashboard', compact(
-                'totalProducts', 
-                'lowStockCount', 
-                'totalEmployees', 
-                'totalStockValue', 
+                'totalProducts',
+                'lowStockCount',
+                'totalEmployees',
+                'totalStockValue',
                 'lowStockProducts'
             ));
         })->name('admin.dashboard');
@@ -103,7 +105,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/products', [ProductController::class, 'store'])->name('admin.products.store');
         Route::put('/products/{id}', [ProductController::class, 'update'])->name('admin.products.update');
         Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('admin.products.destroy');
-        
+
         // Categories Management
         Route::get('/categories', [CategoryController::class, 'index'])->name('admin.categories');
         Route::post('/categories', [CategoryController::class, 'store'])->name('admin.categories.store');
@@ -111,24 +113,32 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/categories/{id}', [CategoryController::class, 'destroy'])->name('admin.categories.destroy');
 
         // Reports
-        Route::get('/reports', function () {
-            return view('admin.reports.index');
-        })->name('admin.reports');
-    });
+        Route::get('/reports', [TransactionController::class, 'dailyReport'])->name('admin.reports');
+        Route::get('/reports/download/pdf', [TransactionController::class, 'downloadPDF'])->name('admin.reports.download.pdf');
+        Route::get('/reports/download/excel', [TransactionController::class, 'downloadExcel'])->name('admin.reports.download.excel');
+    }); // <-- TUTUP ADMIN GROUP
 
-    // Employee Routes
+    // ============================================
+    // EMPLOYEE ROUTES - KELUAR DARI ADMIN GROUP
+    // ============================================
     Route::middleware('role:employee')->prefix('employee')->group(function () {
+        // Dashboard - Stats sahaja
+        Route::get('/dashboard', [EmployeeController::class, 'dashboard'])->name('employee.dashboard');
 
-        Route::get('/dashboard', function () {
-            return view('employee.dashboard');
-        })->name('employee.dashboard');
+        // POS/Cart - Senarai produk + cart
+        Route::get('/cart', [EmployeeController::class, 'cart'])->name('employee.cart');
 
-        Route::get('/cart', function () {
-            return view('employee.cart');
-        })->name('employee.cart');
+        // Cart actions
+        Route::post('/add-to-cart', [EmployeeController::class, 'addToCart'])->name('employee.addToCart');
+        Route::put('/update-cart/{id}', [EmployeeController::class, 'updateCart'])->name('employee.updateCart');
+        Route::delete('/remove-from-cart/{id}', [EmployeeController::class, 'removeFromCart'])->name('employee.removeFromCart');
+        Route::delete('/clear-cart', [EmployeeController::class, 'clearCart'])->name('employee.clearCart');
 
-        Route::get('/checkout', function () {
-            return view('employee.checkout');
-        })->name('employee.checkout');
-    });
-});
+        // Checkout
+        Route::get('/checkout', [EmployeeController::class, 'showCheckout'])->name('employee.showCheckout');
+        Route::post('/checkout', [EmployeeController::class, 'processCheckout'])->name('employee.checkout');
+        Route::get('/history', [EmployeeController::class, 'history'])->name('employee.history');
+        Route::post('/process-payment', [EmployeeController::class, 'processPayment'])->name('employee.processPayment');
+    }); // <-- TUTUP EMPLOYEE GROUP
+
+}); // <-- TUTUP AUTH GROUP

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Category;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -42,7 +43,7 @@ class ProductController extends Controller
             $path = $request->file('product_picture')->store('products', 'public');
             $validated['product_picture'] = $path;
         }
-        
+
         Product::create($validated);
 
         return redirect()->route('admin.products')->with('success', 'Product created successfully');

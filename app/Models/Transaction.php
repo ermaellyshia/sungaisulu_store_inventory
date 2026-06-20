@@ -17,12 +17,12 @@ class Transaction extends Model
         'change_amount',
         'user_id',
     ];
-    
+
     public function items()
     {
         return $this->hasMany(TransactionItem::class);
     }
-    
+
     public function user()
     {
         return $this->belongsTo(User::class);

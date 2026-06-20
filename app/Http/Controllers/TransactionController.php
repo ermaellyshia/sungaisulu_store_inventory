@@ -7,6 +7,7 @@ use App\Models\Transaction;
 use App\Models\TransactionItem;
 use App\Models\Product;
 use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class TransactionController extends Controller
 {
@@ -23,9 +24,9 @@ class TransactionController extends Controller
             'total' => 'required|numeric',
             'amount_received' => 'nullable|numeric',
         ]);
-        
+
         DB::beginTransaction();
-        
+
         try {
             $transaction = Transaction::create([
                 'transaction_number' => 'TRX-' . strtoupper(uniqid()),
@@ -38,10 +39,10 @@ class TransactionController extends Controller
                 'change_amount' => ($validated['amount_received'] ?? $validated['total']) - $validated['total'],
                 'user_id' => auth()->id(),
             ]);
-            
+
             foreach ($validated['items'] as $item) {
                 $product = Product::findOrFail($item['id']);
-                
+
                 TransactionItem::create([
                     'transaction_id' => $transaction->id,
                     'product_id' => $product->id,
@@ -49,59 +50,101 @@ class TransactionController extends Controller
                     'price' => $product->price,
                     'total' => $product->price * $item['quantity'],
                 ]);
-                
+
                 $product->decrement('stock', $item['quantity']);
             }
-            
+
             DB::commit();
-            
+
             return response()->json([
                 'message' => 'Transaction successful',
                 'receipt_number' => $transaction->transaction_number,
                 'transaction' => $transaction
             ]);
-            
+
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json(['message' => 'Transaction failed: ' . $e->getMessage()], 500);
         }
     }
-    
-    public function getReports(Request $request)
+
+    public function dailyReport(Request $request)
     {
-        $startDate = $request->get('start', now()->startOfMonth());
-        $endDate = $request->get('end', now());
+        $date = $request->input('date', now()->toDateString());
         
-        $totalSales = Transaction::whereBetween('created_at', [$startDate, $endDate])->sum('total');
-        $totalTransactions = Transaction::whereBetween('created_at', [$startDate, $endDate])->count();
-        $totalItemsSold = TransactionItem::whereHas('transaction', function($q) use ($startDate, $endDate) {
-            $q->whereBetween('created_at', [$startDate, $endDate]);
-        })->sum('quantity');
+        $transactions = Transaction::whereDate('created_at', $date)
+            ->with('items.product')
+            ->orderBy('created_at', 'desc')
+            ->get();
         
-        $bestSellers = TransactionItem::select('product_id', DB::raw('SUM(quantity) as total_quantity'), DB::raw('SUM(total) as total_revenue'))
-            ->whereHas('transaction', function($q) use ($startDate, $endDate) {
-                $q->whereBetween('created_at', [$startDate, $endDate]);
-            })
-            ->with('product')
-            ->groupBy('product_id')
-            ->orderBy('total_quantity', 'DESC')
-            ->limit(5)
-            ->get()
-            ->map(function($item) {
-                return [
-                    'id' => $item->product_id,
-                    'product_name' => $item->product->product_name,
-                    'category' => $item->product->category->name ?? 'Uncategorized',
-                    'total_quantity' => $item->total_quantity,
-                    'total_revenue' => $item->total_revenue,
+        $totalSales = $transactions->sum('total');
+        $totalItems = $transactions->sum(function($t) {
+            return $t->items->sum('quantity');
+        });
+        $totalTransactions = $transactions->count();
+        
+        return view('admin.reports.index', compact(
+            'transactions', 
+            'totalSales', 
+            'totalItems', 
+            'totalTransactions',
+            'date'
+        ));
+    }
+
+    public function downloadPDF(Request $request)
+    {
+        $date = $request->input('date', now()->toDateString());
+        
+        $transactions = Transaction::whereDate('created_at', $date)
+            ->with('items.product')
+            ->orderBy('created_at', 'desc')
+            ->get();
+        
+        $totalSales = $transactions->sum('total');
+        $totalItems = $transactions->sum(function($t) {
+            return $t->items->sum('quantity');
+        });
+        $totalTransactions = $transactions->count();
+        
+        $pdf = Pdf::loadView('admin.reports.pdf', compact(
+            'transactions', 'totalSales', 'totalItems', 'totalTransactions', 'date'
+        ));
+        
+        return $pdf->download('daily-report-' . $date . '.pdf');
+    }
+
+    public function downloadExcel(Request $request)
+    {
+        $date = $request->input('date', now()->toDateString());
+        
+        $transactions = Transaction::whereDate('created_at', $date)
+            ->with('items.product')
+            ->orderBy('created_at', 'desc')
+            ->get();
+        
+        $data = [];
+        foreach ($transactions as $t) {
+            foreach ($t->items as $item) {
+                $data[] = [
+                    'Invoice' => $t->transaction_number,
+                    'Date' => $t->created_at->format('d/m/Y H:i'),
+                    'Customer' => $t->customer_name ?? 'Walk-in',
+                    'Product' => $item->product->product_name,
+                    'Quantity' => $item->quantity,
+                    'Price' => $item->price,
+                    'Total' => $item->total,
                 ];
-            });
+            }
+        }
         
-        return response()->json([
-            'total_sales' => $totalSales,
-            'total_transactions' => $totalTransactions,
-            'total_items_sold' => $totalItemsSold,
-            'best_sellers' => $bestSellers,
-        ]);
+        return \Maatwebsite\Excel\Facades\Excel::download(
+            new class($data) implements \Maatwebsite\Excel\Concerns\FromArray {
+                protected $data;
+                public function __construct($data) { $this->data = $data; }
+                public function array(): array { return $this->data; }
+            },
+            'daily-report-' . $date . '.xlsx'
+        );
     }
 }

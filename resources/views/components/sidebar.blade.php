@@ -4,7 +4,9 @@
        x-transition:enter-end="translate-x-0"
        class="fixed top-0 left-0 w-64 h-full bg-gradient-to-br from-indigo-900 via-indigo-800 to-purple-900 text-white z-20 shadow-2xl">
     
-    <div class="p-5 border-b border-white/10">
+    <!-- HEADER - Logo + 3 Garis Bertindih -->
+    <div class="flex items-center justify-between p-4 border-b border-white/10">
+        <!-- Logo & Nama -->
         <div class="flex items-center gap-3">
             <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -12,13 +14,22 @@
                 </svg>
             </div>
             <div>
-                <h1 class="text-xl font-bold tracking-tight">Sungai Sulu</h1>
+                <h1 class="text-lg font-bold tracking-tight">Sungai Sulu</h1>
                 <p class="text-xs text-indigo-200">Inventory System</p>
             </div>
         </div>
+        
+        <!-- ☰ 3 GARIS BERTINDIH - TUTUP SIDEBAR -->
+        <button @click="sidebarOpen = !sidebarOpen" 
+                class="p-2 rounded-lg hover:bg-white/10 transition-colors duration-200 focus:outline-none">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+        </button>
     </div>
     
-    <nav class="p-4 space-y-1">
+    <!-- MENU NAVIGATION -->
+    <nav class="p-4 space-y-1 overflow-y-auto h-[calc(100vh-80px)]">
         @auth
             @if(Auth::user()->role === 'admin')
                 <a href="{{ route('admin.dashboard') }}" 
@@ -72,6 +83,7 @@
         @endauth
     </nav>
     
+    <!-- LOGOUT -->
     <div class="absolute bottom-0 w-64 p-4 border-t border-white/10">
         <form method="POST" action="{{ route('logout') }}">
             @csrf
