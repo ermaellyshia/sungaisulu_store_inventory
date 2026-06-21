@@ -40,7 +40,7 @@ class EmployeeController extends Controller
             'phone' => 'nullable|string|max:20',
             'address' => 'nullable|string|max:500',  
             'password' => 'nullable|min:8|regex:/[A-Z]/|regex:/[!@#$%^&*(),.?":{}|<>]/',
-            'role' => 'required|in:admin,employee',
+            
         ]);
 
         if (empty($validated['password'])) {
@@ -64,7 +64,7 @@ class EmployeeController extends Controller
             'phone' => 'nullable|string|max:20',
             'address' => 'nullable|string|max:500',  
             'password' => 'nullable|min:8|regex:/[A-Z]/|regex:/[!@#$%^&*(),.?":{}|<>]/',
-            'role' => 'sometimes|in:admin,employee',
+            
         ]);
 
         if (isset($validated['password']) && !empty($validated['password'])) {

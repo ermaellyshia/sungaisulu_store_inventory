@@ -2,11 +2,11 @@
 
 @section('content')
 <div class="container mx-auto px-4 py-8">
-    <h1 class="text-2xl font-bold mb-6">📋 Sejarah Transaksi</h1>
+    <h1 class="text-2xl font-bold mb-2 text-purple-700 dark:text-purple-300">📋 Transaction's History</h1>
 
     @if($transactions->isEmpty())
         <div class="bg-yellow-100 p-6 rounded-lg text-center">
-            <p class="text-yellow-700">Tiada transaksi.</p>
+            <p class="text-yellow-700">No Transaction Found.</p>
         </div>
     @else
         <div class="bg-white rounded-lg shadow-md overflow-hidden">
@@ -14,11 +14,11 @@
                 <thead class="bg-gray-50">
                     <tr>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500">ID</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500">No. Transaksi</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500">Tarikh</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500">Pelanggan</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500">Jumlah</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500">Item</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500">Transaction Number</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500">Date</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500">Customer</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500">Total</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500">Items</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -44,8 +44,8 @@
         <div class="mt-6">{{ $transactions->links() }}</div>
     @endif
 
-    <a href="{{ route('employee.dashboard') }}" class="mt-6 inline-block px-6 py-2 bg-blue-600 text-white rounded-lg">
-        ← Kembali
+    <a href="{{ route('employee.dashboard') }}" class="mt-6 inline-block px-6 py-2 bg-purple-600 text-white rounded-lg">
+        ← Back
     </a>
 </div>
 @endsection

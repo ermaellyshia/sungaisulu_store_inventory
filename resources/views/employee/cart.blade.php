@@ -10,7 +10,7 @@
                 <input type="text" name="search" placeholder="Find product..."
                     class="flex-1 rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                     value="{{ request('search') }}">
-                <button type="submit" class="px-6 py-2 bg-blue-600 text-black rounded-lg hover:bg-blue-700 dark:text-purple">
+                <button type="submit" class="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 dark:text-purple">
                     Find
                 </button>
             </div>
@@ -130,11 +130,6 @@
                 </button>
             </form>
         @endif
-
-        <a href="{{ route('employee.cart') }}"
-            class="mt-2 w-full inline-block text-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700">
-            Lihat Cart & Checkout
-        </a>
     </div>
 
     {{-- JAVASCRIPT YANG BETUL --}}

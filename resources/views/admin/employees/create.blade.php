@@ -66,7 +66,7 @@
                         @enderror
                     </div>
 
-                    <!-- ADDRESS - BOX BARU -->
+                    <!-- ADDRESS -->
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                             Address
@@ -79,30 +79,18 @@
                         @enderror
                     </div>
 
-                    <!-- Role -->
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                            Role <span class="text-red-500">*</span>
-                        </label>
-                        <select name="role" id="role" required
-                            class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-gray-900 text-gray-800 dark:text-white">
-                            <option value="employee" {{ old('role') == 'employee' ? 'selected' : '' }}>Employee</option>
-                            <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Admin</option>
-                        </select>
-                        @error('role')
-                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                        @enderror
-                    </div>
+                    <!-- Role - HIDDEN, default employee -->
+                    <input type="hidden" name="role" value="employee">
 
                     <!-- Password -->
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                            Password
+                            Password <span class="text-xs font-normal text-gray-500">(leave blank for default)</span>
                         </label>
                         <input type="password" name="password" id="password"
                             class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-gray-900 text-gray-800 dark:text-white @error('password') border-red-500 @enderror"
-                            placeholder="Leave blank for default 'password@123'">
-                       <p class="text-xs text-gray-500 mt-1">Min 8 characters, uppercase, lowercase, symbol (!@#$%^&*). Leave blank to use default password.</p>
+                            placeholder="Leave blank for default password">
+                        <p class="text-xs text-gray-500 mt-1">Min 8 characters, uppercase, lowercase, symbol (!@#$%^&*). Leave blank to use default password.</p>
                         @error('password')
                             <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                         @enderror
@@ -122,7 +110,7 @@
                             </div>
                             <div class="ml-auto">
                                 <span id="preview_role"
-                                    class="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">-</span>
+                                    class="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">Employee</span>
                             </div>
                         </div>
                     </div>
@@ -147,31 +135,19 @@
         // Live preview
         const nameInput = document.getElementById('name');
         const emailInput = document.getElementById('email');
-        const roleSelect = document.getElementById('role');
 
         function updatePreview() {
             const name = nameInput.value || '-';
             const email = emailInput.value || '-';
-            const role = roleSelect.value === 'admin' ? 'Admin' : 'Employee';
             const initial = name !== '-' ? name.charAt(0).toUpperCase() : '?';
 
             document.getElementById('preview_name').textContent = name;
             document.getElementById('preview_email').textContent = email;
-            document.getElementById('preview_role').textContent = role;
             document.getElementById('preview_initial').textContent = initial;
-
-            // Change role badge color
-            const roleBadge = document.getElementById('preview_role');
-            if (roleSelect.value === 'admin') {
-                roleBadge.className = 'px-2 py-1 text-xs rounded-full bg-purple-100 text-purple-800';
-            } else {
-                roleBadge.className = 'px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800';
-            }
         }
 
         nameInput.addEventListener('input', updatePreview);
         emailInput.addEventListener('input', updatePreview);
-        roleSelect.addEventListener('change', updatePreview);
 
         // Initialize
         updatePreview();

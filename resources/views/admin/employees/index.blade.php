@@ -27,7 +27,6 @@
                         <th class="px-3 py-2 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase">Email</th>
                         <th class="px-3 py-2 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase">Phone</th>
                         <th class="px-3 py-2 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase">Address</th>
-                        <th class="px-3 py-2 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase">Role</th>
                         <th class="px-3 py-2 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase">Joined</th>
                         <th class="px-3 py-2 text-right text-xs font-medium text-gray-700 dark:text-gray-300 uppercase">Actions</th>
                     </tr>
@@ -41,17 +40,6 @@
                         <td class="px-3 py-3 text-gray-600 dark:text-gray-400 truncate max-w-[150px]">{{ $employee->email }}</td>
                         <td class="px-3 py-3 text-gray-600 dark:text-gray-400">{{ $employee->phone ?? '-' }}</td>
                         <td class="px-3 py-3 text-gray-600 dark:text-gray-400 truncate max-w-[120px]">{{ $employee->address ?? '-' }}</td>
-                        <td class="px-3 py-3">
-                            @if($employee->role === 'admin')
-                                <span class="px-2 py-0.5 text-xs rounded-full bg-purple-100 dark:bg-purple-900/50 text-purple-800 dark:text-purple-300 capitalize">
-                                    {{ $employee->role }}
-                                </span>
-                            @else
-                                <span class="px-2 py-0.5 text-xs rounded-full bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-300 capitalize">
-                                    {{ $employee->role }}
-                                </span>
-                            @endif
-                        </td>
                         <td class="px-3 py-3 text-gray-500 dark:text-gray-400 text-xs">{{ $employee->created_at->format('d M Y') }}</td>
                         <td class="px-3 py-3 text-right">
                             <button onclick='editEmployee({{ json_encode($employee) }})' 
@@ -71,7 +59,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="7" class="px-6 py-12 text-center text-gray-500">
+                        <td colspan="6" class="px-6 py-12 text-center text-gray-500 dark:text-gray-400">
                             <svg class="w-12 h-12 mx-auto text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
                             </svg>
