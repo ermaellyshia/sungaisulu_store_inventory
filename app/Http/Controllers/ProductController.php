@@ -66,7 +66,7 @@ class ProductController extends Controller
         if ($request->hasFile('product_picture')) {
             // Hapus gambar lama kalau ada
             if ($product->product_picture) {
-                \Storage::disk('public')->delete($product->product_picture);
+                Storage::disk('public')->delete($product->product_picture);
             }
             $path = $request->file('product_picture')->store('products', 'public');
             $validated['product_picture'] = $path;
@@ -79,23 +79,24 @@ class ProductController extends Controller
 
     public function destroy($id)
     {
-        $product = Product::findOrFail($id);
+        try {
+            // Force delete
+            \DB::statement('SET FOREIGN_KEY_CHECKS=0');
 
-        // Hapus gambar kalau ada
-        if ($product->product_picture) {
-            \Storage::disk('public')->delete($product->product_picture);
+            // Delete transaction items
+            \DB::table('transaction_items')->where('product_id', $id)->delete();
+
+            // Delete product
+            \DB::table('products')->where('id', $id)->delete();
+
+            \DB::statement('SET FOREIGN_KEY_CHECKS=1');
+
+            return redirect()->route('admin.products')->with('success', 'Product deleted successfully');
+        } catch (\Exception $e) {
+            \DB::statement('SET FOREIGN_KEY_CHECKS=1');
+            return back()->with('error', 'Failed to delete product: ' . $e->getMessage());
         }
-
-        $product->delete();
-
-        return redirect()->route('admin.products')->with('success', 'Product deleted successfully');
     }
-
-    public function isLowStock(Product $product)
-    {
-        return $product->stock <= $product->min_stock;
-    }
-
     public function create()
     {
         $categories = Category::all();
