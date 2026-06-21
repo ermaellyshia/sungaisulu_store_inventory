@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Login - Sungai Sulu Store</title>
+    <title>Login - SungaiSulu Store</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     
@@ -63,7 +63,7 @@
         
         <!-- Title -->
         <h1 class="text-2xl font-bold text-center text-gray-800 mb-2 logo-container" style="animation-delay: 0.1s">
-            Sungai Sulu Store
+            SungaiSulu Store
         </h1>
         
         <p class="text-gray-500 text-sm text-center mb-6 logo-container" style="animation-delay: 0.2s">

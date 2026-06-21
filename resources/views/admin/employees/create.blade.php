@@ -30,24 +30,27 @@
                             Full Name <span class="text-red-500">*</span>
                         </label>
                         <input type="text" name="name" id="name" required
-                            class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-gray-900 text-gray-800 dark:text-white"
-                            placeholder="Enter full name">
+                            class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-gray-900 text-gray-800 dark:text-white @error('name') border-red-500 @enderror"
+                            placeholder="Enter full name" value="{{ old('name') }}">
                         @error('name')
                             <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                         @enderror
                     </div>
 
-                    <!-- Email -->
+                    <!-- Email - DENGAN WARNING DUPLICATE -->
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                             Email Address <span class="text-red-500">*</span>
                         </label>
                         <input type="email" name="email" id="email" required
-                            class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-gray-900 text-gray-800 dark:text-white"
-                            placeholder="Enter email address">
+                            class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-gray-900 text-gray-800 dark:text-white @error('email') border-red-500 @enderror"
+                            placeholder="Enter email address" value="{{ old('email') }}">
                         @error('email')
                             <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                         @enderror
+                        @if(session('error'))
+                            <p class="text-red-500 text-sm mt-1">{{ session('error') }}</p>
+                        @endif
                     </div>
 
                     <!-- Phone Number -->
@@ -56,12 +59,26 @@
                             Phone Number <span class="text-red-500">*</span>
                         </label>
                         <input type="tel" name="phone" id="phone" required
-                            class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-gray-900 text-gray-800 dark:text-white"
-                            placeholder="Enter phone number (e.g., 012-3456789)">
+                            class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-gray-900 text-gray-800 dark:text-white @error('phone') border-red-500 @enderror"
+                            placeholder="Enter phone number (e.g., 012-3456789)" value="{{ old('phone') }}">
                         @error('phone')
                             <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                         @enderror
                     </div>
+
+                    <!-- ADDRESS - BOX BARU -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                            Address
+                        </label>
+                        <textarea name="address" id="address" rows="3"
+                            class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-gray-900 text-gray-800 dark:text-white @error('address') border-red-500 @enderror"
+                            placeholder="Enter employee address (optional)">{{ old('address') }}</textarea>
+                        @error('address')
+                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+
                     <!-- Role -->
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
@@ -69,8 +86,8 @@
                         </label>
                         <select name="role" id="role" required
                             class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-gray-900 text-gray-800 dark:text-white">
-                            <option value="employee">Employee</option>
-                            <option value="admin">Admin</option>
+                            <option value="employee" {{ old('role') == 'employee' ? 'selected' : '' }}>Employee</option>
+                            <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Admin</option>
                         </select>
                         @error('role')
                             <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
@@ -83,9 +100,9 @@
                             Password
                         </label>
                         <input type="password" name="password" id="password"
-                            class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-gray-900 text-gray-800 dark:text-white"
-                            placeholder="Leave blank for default 'password123'">
-                        <p class="text-xs text-gray-500 mt-1">Minimum 8 characters. Leave blank to use default password.</p>
+                            class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-gray-900 text-gray-800 dark:text-white @error('password') border-red-500 @enderror"
+                            placeholder="Leave blank for default 'password@123'">
+                       <p class="text-xs text-gray-500 mt-1">Min 8 characters, uppercase, lowercase, symbol (!@#$%^&*). Leave blank to use default password.</p>
                         @error('password')
                             <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                         @enderror

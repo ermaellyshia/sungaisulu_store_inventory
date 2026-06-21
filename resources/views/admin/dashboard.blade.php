@@ -31,10 +31,10 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm text-gray-500 dark:text-gray-400">Low Stock Items</p>
-                        <p class="text-2xl font-bold text-yellow-600">{{ $lowStockCount ?? 0 }}</p>
+                        <p class="text-2xl font-bold text-yellow-600 dark:text-yellow-400">{{ $lowStockCount ?? 0 }}</p>
                     </div>
                     <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/50 rounded-2xl flex items-center justify-center">
-                        <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-6 h-6 text-yellow-600 dark:text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                         </svg>
@@ -63,10 +63,10 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm text-gray-500 dark:text-gray-400">Stock Value</p>
-                        <p class="text-2xl font-bold text-green-600">RM {{ number_format($totalStockValue ?? 0, 2) }}</p>
+                        <p class="text-2xl font-bold text-green-600 dark:text-green-400">RM {{ number_format($totalStockValue ?? 0, 2) }}</p>
                     </div>
                     <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/50 rounded-2xl flex items-center justify-center">
-                        <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
@@ -84,23 +84,21 @@
                 <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                     <thead class="bg-gray-100 dark:bg-gray-900/50">
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500">Product</th>
-                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500">Current Stock</th>
-                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500">Min Stock</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300">Product</th>
+                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300">Current Stock</th>
+                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300">Min Stock</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse($lowStockProducts ?? [] as $product)
                             <tr class="hover:bg-gray-100 dark:hover:bg-gray-700/50">
-                                <td class="px-6 py-4 text-sm font-medium">{{ $product->product_name }}</td>
-                                <td class="px-6 py-4 text-sm text-right text-red-600 font-semibold">{{ $product->stock }}
-                                </td>
-                                <td class="px-6 py-4 text-sm text-right">{{ $product->min_stock }}</td>
+                                <td class="px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">{{ $product->product_name }}</td>
+                                <td class="px-6 py-4 text-sm text-right text-red-600 dark:text-red-400 font-semibold">{{ $product->stock }}</td>
+                                <td class="px-6 py-4 text-sm text-right text-gray-900 dark:text-white">{{ $product->min_stock }}</td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="3" class="px-6 py-8 text-center text-gray-500">All products have sufficient
-                                    stock ✓</td>
+                                <td colspan="3" class="px-6 py-8 text-center text-gray-500 dark:text-gray-400">All products have sufficient stock ✓</td>
                             </tr>
                         @endforelse
                     </tbody>

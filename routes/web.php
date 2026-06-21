@@ -115,7 +115,6 @@ Route::middleware(['auth'])->group(function () {
         // Reports
         Route::get('/reports', [TransactionController::class, 'dailyReport'])->name('admin.reports');
         Route::get('/reports/download/pdf', [TransactionController::class, 'downloadPDF'])->name('admin.reports.download.pdf');
-        Route::get('/reports/download/excel', [TransactionController::class, 'downloadExcel'])->name('admin.reports.download.excel');
     }); // <-- TUTUP ADMIN GROUP
 
     // ============================================

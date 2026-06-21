@@ -61,7 +61,6 @@ class TransactionController extends Controller
                 'receipt_number' => $transaction->transaction_number,
                 'transaction' => $transaction
             ]);
-
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json(['message' => 'Transaction failed: ' . $e->getMessage()], 500);
@@ -70,81 +69,58 @@ class TransactionController extends Controller
 
     public function dailyReport(Request $request)
     {
-        $date = $request->input('date', now()->toDateString());
-        
-        $transactions = Transaction::whereDate('created_at', $date)
+        $month = $request->input('month', now()->format('Y-m'));
+
+        // DEBUG - Log je
+        \Log::info('Selected month: ' . $month);
+
+        $transactions = Transaction::whereYear('created_at', substr($month, 0, 4))
+            ->whereMonth('created_at', substr($month, 5, 2))
             ->with('items.product')
             ->orderBy('created_at', 'desc')
             ->get();
-        
+
+        \Log::info('Transactions found: ' . $transactions->count());
+
         $totalSales = $transactions->sum('total');
-        $totalItems = $transactions->sum(function($t) {
+        $totalItems = $transactions->sum(function ($t) {
             return $t->items->sum('quantity');
         });
         $totalTransactions = $transactions->count();
-        
+
         return view('admin.reports.index', compact(
-            'transactions', 
-            'totalSales', 
-            'totalItems', 
+            'transactions',
+            'totalSales',
+            'totalItems',
             'totalTransactions',
-            'date'
+            'month'
         ));
     }
 
     public function downloadPDF(Request $request)
     {
-        $date = $request->input('date', now()->toDateString());
-        
-        $transactions = Transaction::whereDate('created_at', $date)
+        $month = $request->input('month', now()->format('Y-m'));
+
+        $transactions = Transaction::whereYear('created_at', substr($month, 0, 4))
+            ->whereMonth('created_at', substr($month, 5, 2))
             ->with('items.product')
             ->orderBy('created_at', 'desc')
             ->get();
-        
+
         $totalSales = $transactions->sum('total');
-        $totalItems = $transactions->sum(function($t) {
+        $totalItems = $transactions->sum(function ($t) {
             return $t->items->sum('quantity');
         });
         $totalTransactions = $transactions->count();
-        
-        $pdf = Pdf::loadView('admin.reports.pdf', compact(
-            'transactions', 'totalSales', 'totalItems', 'totalTransactions', 'date'
-        ));
-        
-        return $pdf->download('daily-report-' . $date . '.pdf');
-    }
 
-    public function downloadExcel(Request $request)
-    {
-        $date = $request->input('date', now()->toDateString());
-        
-        $transactions = Transaction::whereDate('created_at', $date)
-            ->with('items.product')
-            ->orderBy('created_at', 'desc')
-            ->get();
-        
-        $data = [];
-        foreach ($transactions as $t) {
-            foreach ($t->items as $item) {
-                $data[] = [
-                    'Invoice' => $t->transaction_number,
-                    'Date' => $t->created_at->format('d/m/Y H:i'),
-                    'Customer' => $t->customer_name ?? 'Walk-in',
-                    'Product' => $item->product->product_name,
-                    'Quantity' => $item->quantity,
-                    'Price' => $item->price,
-                    'Total' => $item->total,
-                ];
-            }
-        }
-        
-        return \Maatwebsite\Excel\Facades\Excel::download(
-            new class($data) implements \Maatwebsite\Excel\Concerns\FromArray {
-                protected $data;
-                public function __construct($data) { $this->data = $data; }
-                public function array(): array { return $this->data; }
-            },
-            'daily-report-' . $date . '.xlsx'
-        );
+        $pdf = Pdf::loadView('admin.reports.pdf', compact(
+            'transactions',
+            'totalSales',
+            'totalItems',
+            'totalTransactions',
+            'month'
+        ));
+
+        return $pdf->download('monthly-report-' . $month . '.pdf');
     }
 }

@@ -17,7 +17,7 @@
     </style>
 </head>
 <body>
-    <h1>Daily Report - {{ date('d/m/Y', strtotime($date)) }}</h1>
+    <h1>Monthly Report - {{ date('F Y', strtotime($month . '-01')) }}</h1>
     
     <div class="stats">
         <div class="stat-box">

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Register - Sungai Sulu Store</title>
+    <title>Register - SungaiSulu Store</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     
@@ -102,6 +102,16 @@
         .toggle-password:hover {
             color: #6366f1;
         }
+        
+        .input-error {
+            border-color: #ef4444 !important;
+        }
+        
+        .error-text {
+            color: #ef4444;
+            font-size: 13px;
+            margin-top: 4px;
+        }
     </style>
 </head>
 <body class="bg-pastel-purple min-h-screen flex items-center justify-center p-4">
@@ -125,6 +135,16 @@
             Register to get started
         </p>
         
+        @if ($errors->any())
+            <div class="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg">
+                <ul class="list-disc list-inside text-sm">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+        
         <form method="POST" action="{{ route('register.post') }}" id="registerForm">
             @csrf
             
@@ -134,22 +154,31 @@
                     <div class="mb-4">
                         <label class="block text-gray-700 text-sm font-semibold mb-2">Full Name</label>
                         <input type="text" name="name" required
-                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
-                               placeholder="Enter your full name">
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 @error('name') border-red-500 @enderror"
+                               placeholder="Enter your full name" value="{{ old('name') }}">
+                        @error('name')
+                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
                     
                     <div class="mb-4">
                         <label class="block text-gray-700 text-sm font-semibold mb-2">Email Address</label>
                         <input type="email" name="email" required
-                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
-                               placeholder="Enter your email">
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 @error('email') border-red-500 @enderror"
+                               placeholder="Enter your email" value="{{ old('email') }}">
+                        @error('email')
+                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
                     
                     <div class="mb-4">
                         <label class="block text-gray-700 text-sm font-semibold mb-2">Phone Number</label>
                         <input type="tel" name="phone" required
-                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
-                               placeholder="Enter your phone number">
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 @error('phone') border-red-500 @enderror"
+                               placeholder="Enter your phone number" value="{{ old('phone') }}">
+                        @error('phone')
+                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
                 </div>
                 
@@ -158,7 +187,7 @@
                         <label class="block text-gray-700 text-sm font-semibold mb-2">Password</label>
                         <div class="password-wrapper">
                             <input type="password" name="password" id="password" required
-                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 @error('password') border-red-500 @enderror"
                                    placeholder="Create a password">
                             <span class="toggle-password" onclick="togglePassword('password')">👁️</span>
                         </div>
@@ -166,25 +195,28 @@
                         <div class="password-requirement">
                             <div class="requirement-item" id="req-length">
                                 <span class="check">✓</span>
-                                <span>Min 8 aksara</span>
+                                <span>Min 8 characters</span>
                             </div>
                             <div class="requirement-item" id="req-upper">
                                 <span class="check">✓</span>
-                                <span>Huruf besar</span>
+                                <span>Uppercase letter</span>
                             </div>
                             <div class="requirement-item" id="req-lower">
                                 <span class="check">✓</span>
-                                <span>Huruf kecil</span>
+                                <span>Lowercase letter</span>
                             </div>
                             <div class="requirement-item" id="req-number">
                                 <span class="check">✓</span>
-                                <span>Nombor</span>
+                                <span>Number</span>
                             </div>
                             <div class="requirement-item" id="req-symbol">
                                 <span class="check">✓</span>
-                                <span>Simbol</span>
+                                <span>Symbol</span>
                             </div>
                         </div>
+                        @error('password')
+                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
                     
                     <div class="mb-4">

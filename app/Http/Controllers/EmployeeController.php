@@ -38,17 +38,18 @@ class EmployeeController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users',
             'phone' => 'nullable|string|max:20',
-            'password' => 'nullable|min:8',
+            'address' => 'nullable|string|max:500',  
+            'password' => 'nullable|min:8|regex:/[A-Z]/|regex:/[!@#$%^&*(),.?":{}|<>]/',
             'role' => 'required|in:admin,employee',
         ]);
 
         if (empty($validated['password'])) {
-            $validated['password'] = Hash::make('password123');
+            $validated['password'] = Hash::make('password@123');
         } else {
             $validated['password'] = Hash::make($validated['password']);
         }
 
-        User::create($validated);
+        User::create($validated);  
 
         return redirect()->route('admin.employees')->with('success', 'Employee created successfully');
     }
@@ -61,7 +62,8 @@ class EmployeeController extends Controller
             'name' => 'sometimes|string|max:255',
             'email' => 'sometimes|email|unique:users,email,' . $id,
             'phone' => 'nullable|string|max:20',
-            'password' => 'nullable|min:8',
+            'address' => 'nullable|string|max:500',  
+            'password' => 'nullable|min:8|regex:/[A-Z]/|regex:/[!@#$%^&*(),.?":{}|<>]/',
             'role' => 'sometimes|in:admin,employee',
         ]);
 
@@ -71,7 +73,7 @@ class EmployeeController extends Controller
             unset($validated['password']);
         }
 
-        $user->update($validated);
+        $user->update($validated);  
 
         return redirect()->route('admin.employees')->with('success', 'Employee updated successfully');
     }
@@ -114,16 +116,22 @@ class EmployeeController extends Controller
     }
     public function addToCart(Request $request)
     {
+        $request->validate([
+            'product_id' => 'required|exists:products,id',
+            'quantity' => 'required|integer|min:1'
+        ]);
+
         $product = Product::findOrFail($request->product_id);
 
         $cart = session()->get('cart', []);
 
         if (isset($cart[$product->id])) {
-            $cart[$product->id]['quantity'] += 1;
+            // TAMBAH quantity dari form (bukan +1)
+            $cart[$product->id]['quantity'] += $request->quantity;
         } else {
             $cart[$product->id] = [
                 'name' => $product->product_name,
-                'quantity' => 1,
+                'quantity' => $request->quantity,  // GUNA quantity dari form
                 'price' => $product->price,
                 'stock' => $product->stock,
                 'picture' => $product->product_picture
@@ -131,8 +139,7 @@ class EmployeeController extends Controller
         }
 
         session()->put('cart', $cart);
-
-        return back()->with('success', 'Barang ditambah ke cart!');
+        return back()->with('success', $product->product_name . ' added to the cart!');
     }
 
     public function viewCart()
@@ -148,7 +155,7 @@ class EmployeeController extends Controller
             $cart[$id]['quantity'] = $request->quantity;
             session()->put('cart', $cart);
         }
-        return back()->with('success', 'Cart dikemaskini!');
+        return back()->with('success', 'Cart updated!');
     }
 
     public function removeFromCart($id)
@@ -156,20 +163,20 @@ class EmployeeController extends Controller
         $cart = session()->get('cart', []);
         unset($cart[$id]);
         session()->put('cart', $cart);
-        return back()->with('success', 'Item dibuang.');
+        return back()->with('success', 'Item cancelled.');
     }
 
     public function clearCart()
     {
         session()->forget('cart');
-        return redirect()->route('employee.dashboard')->with('success', 'Cart dikosongkan.');
+        return redirect()->route('employee.dashboard')->with('success', 'Cart emptied.');
     }
 
     public function processCheckout()
     {
         $cart = session()->get('cart', []);
         if (empty($cart)) {
-            return redirect()->route('employee.cart')->with('error', 'Cart kosong!');
+            return redirect()->route('employee.cart')->with('error', 'Cart empty!');
         }
 
         DB::beginTransaction();
@@ -190,7 +197,7 @@ class EmployeeController extends Controller
             foreach ($cart as $id => $item) {
                 $product = Product::findOrFail($id);
                 if ($product->stock < $item['quantity']) {
-                    throw new \Exception("Stok {$product->product_name} tidak mencukupi!");
+                    throw new \Exception("Stock {$product->product_name} not enough!");
                 }
 
                 $product->decrement('stock', $item['quantity']);
@@ -221,7 +228,7 @@ class EmployeeController extends Controller
             session()->forget('cart');
             DB::commit();
 
-            return redirect()->route('employee.history')->with('success', 'Checkout berjaya!');
+            return redirect()->route('employee.history')->with('success', 'Checkout succesfully!');
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->with('error', $e->getMessage());
@@ -247,73 +254,72 @@ class EmployeeController extends Controller
         return view('employee.pos', compact('products'));
     }
     public function processPayment(Request $request)
-{
-    $cart = session()->get('cart', []);
-    
-    if (empty($cart)) {
-        return redirect()->route('employee.cart')->with('error', 'Cart kosong!');
-    }
-    
-    DB::beginTransaction();
-    
-    try {
-        $total = 0;
-        foreach ($cart as $id => $item) {
-            $product = Product::findOrFail($id);
-            
-            // Check stock
-            if ($product->stock < $item['quantity']) {
-                throw new \Exception("Stok {$product->product_name} tidak mencukupi! Stok: {$product->stock}");
+    {
+        $cart = session()->get('cart', []);
+
+        if (empty($cart)) {
+            return redirect()->route('employee.cart')->with('error', 'Cart empty!');
+        }
+
+        DB::beginTransaction();
+
+        try {
+            $total = 0;
+            foreach ($cart as $id => $item) {
+                $product = Product::findOrFail($id);
+
+                // Check stock
+                if ($product->stock < $item['quantity']) {
+                    throw new \Exception("Stock {$product->product_name} not enought! Stock: {$product->stock}");
+                }
+
+                // Kurangkan stok
+                $product->decrement('stock', $item['quantity']);
+
+                // Rekod stock movement
+                StockMovement::create([
+                    'product_id' => $product->id,
+                    'user_id' => Auth::id(),
+                    'type' => 'out',
+                    'quantity' => $item['quantity']
+                ]);
+
+                $total += $product->price * $item['quantity'];
             }
-            
-            // Kurangkan stok
-            $product->decrement('stock', $item['quantity']);
-            
-            // Rekod stock movement
-            StockMovement::create([
-                'product_id' => $product->id,
+
+            // Simpan transaction
+            $transaction = Transaction::create([
                 'user_id' => Auth::id(),
-                'type' => 'out',
-                'quantity' => $item['quantity']
+                'transaction_number' => 'INV-' . time(),
+                'customer_name' => 'Walk-in Customer',
+                'payment_method' => 'cash',
+                'subtotal' => $total,
+                'tax' => 0,
+                'total' => $total,
+                'amount_received' => $total,
+                'change_amount' => 0,
             ]);
-            
-            $total += $product->price * $item['quantity'];
+
+            // Simpan transaction items
+            foreach ($cart as $id => $item) {
+                TransactionItem::create([
+                    'transaction_id' => $transaction->id,
+                    'product_id' => $id,
+                    'quantity' => $item['quantity'],
+                    'price' => $item['price'],
+                    'total' => $item['price'] * $item['quantity']
+                ]);
+            }
+
+            // Kosongkan cart
+            session()->forget('cart');
+
+            DB::commit();
+
+            return redirect()->route('employee.cart')->with('success', 'Payment successful! Stock are decreased.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', $e->getMessage());
         }
-        
-        // Simpan transaction
-        $transaction = Transaction::create([
-            'user_id' => Auth::id(),
-            'transaction_number' => 'INV-' . time(),
-            'customer_name' => 'Walk-in Customer',
-            'payment_method' => 'cash',
-            'subtotal' => $total,
-            'tax' => 0,
-            'total' => $total,
-            'amount_received' => $total,
-            'change_amount' => 0,
-        ]);
-        
-        // Simpan transaction items
-        foreach ($cart as $id => $item) {
-            TransactionItem::create([
-                'transaction_id' => $transaction->id,
-                'product_id' => $id,
-                'quantity' => $item['quantity'],
-                'price' => $item['price'],
-                'total' => $item['price'] * $item['quantity']
-            ]);
-        }
-        
-        // Kosongkan cart
-        session()->forget('cart');
-        
-        DB::commit();
-        
-        return redirect()->route('employee.cart')->with('success', 'Payment successful! Stok telah dikurangkan.');
-        
-    } catch (\Exception $e) {
-        DB::rollBack();
-        return back()->with('error', $e->getMessage());
     }
-}
 }

@@ -14,7 +14,7 @@
                 </svg>
             </div>
             <div>
-                <h1 class="text-lg font-bold tracking-tight">Sungai Sulu</h1>
+                <h1 class="text-lg font-bold tracking-tight">SungaiSulu</h1>
                 <p class="text-xs text-indigo-200">Inventory System</p>
             </div>
         </div>
@@ -77,7 +77,7 @@
                     <svg class="w-5 h-5 transition-transform group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-1.5 1.5M17 13l1.5 1.5M9 21a1 1 0 100-2 1 1 0 000 2zm8 0a1 1 0 100-2 1 1 0 000 2z"/>
                     </svg>
-                    <span>POS Cart</span>
+                    <span>Stocks</span>
                 </a>
             @endif
         @endauth
