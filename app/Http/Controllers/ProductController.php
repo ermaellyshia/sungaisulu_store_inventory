@@ -83,7 +83,7 @@ class ProductController extends Controller
 
         // Delete image if exists
         if ($product->product_picture) {
-            \Storage::disk('public')->delete($product->product_picture);
+            Storage::disk('public')->delete($product->product_picture);
         }
 
         // SOFT DELETE - hanya set deleted_at

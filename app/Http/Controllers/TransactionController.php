@@ -104,6 +104,8 @@ class TransactionController extends Controller
             ->whereMonth('created_at', substr($month, 5, 2))
             ->with(['items' => function ($q) {
                 $q->withTrashed();
+            }, 'items.product' => function ($q) {
+                $q->withTrashed();  // Include deleted products
             }])
             ->orderBy('created_at', 'desc')
             ->get();

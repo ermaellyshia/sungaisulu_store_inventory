@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Daily Report</title>
+    <title>Monthly Report</title>
     <style>
         body { font-family: Arial, sans-serif; padding: 20px; }
         h1 { color: #7c3aed; text-align: center; }
