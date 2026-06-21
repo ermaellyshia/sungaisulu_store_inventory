@@ -38,9 +38,9 @@ class EmployeeController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users',
             'phone' => 'nullable|string|max:20',
-            'address' => 'nullable|string|max:500',  
+            'address' => 'nullable|string|max:500',
             'password' => 'nullable|min:8|regex:/[A-Z]/|regex:/[!@#$%^&*(),.?":{}|<>]/',
-            
+
         ]);
 
         if (empty($validated['password'])) {
@@ -49,7 +49,7 @@ class EmployeeController extends Controller
             $validated['password'] = Hash::make($validated['password']);
         }
 
-        User::create($validated);  
+        User::create($validated);
 
         return redirect()->route('admin.employees')->with('success', 'Employee created successfully');
     }
@@ -62,9 +62,9 @@ class EmployeeController extends Controller
             'name' => 'sometimes|string|max:255',
             'email' => 'sometimes|email|unique:users,email,' . $id,
             'phone' => 'nullable|string|max:20',
-            'address' => 'nullable|string|max:500',  
+            'address' => 'nullable|string|max:500',
             'password' => 'nullable|min:8|regex:/[A-Z]/|regex:/[!@#$%^&*(),.?":{}|<>]/',
-            
+
         ]);
 
         if (isset($validated['password']) && !empty($validated['password'])) {
@@ -73,7 +73,7 @@ class EmployeeController extends Controller
             unset($validated['password']);
         }
 
-        $user->update($validated);  
+        $user->update($validated);
 
         return redirect()->route('admin.employees')->with('success', 'Employee updated successfully');
     }
@@ -261,6 +261,10 @@ class EmployeeController extends Controller
             return redirect()->route('employee.cart')->with('error', 'Cart empty!');
         }
 
+        // AMBIL dari form - SET DEFAULT
+        $paymentMethod = $request->input('payment_method', 'cash');
+        $customerName = $request->input('customer_name', 'Walk-in Customer');  // <-- DEFAULT
+
         DB::beginTransaction();
 
         try {
@@ -268,15 +272,12 @@ class EmployeeController extends Controller
             foreach ($cart as $id => $item) {
                 $product = Product::findOrFail($id);
 
-                // Check stock
                 if ($product->stock < $item['quantity']) {
-                    throw new \Exception("Stock {$product->product_name} not enought! Stock: {$product->stock}");
+                    throw new \Exception("Stock {$product->product_name} not enough! Stock: {$product->stock}");
                 }
 
-                // Kurangkan stok
                 $product->decrement('stock', $item['quantity']);
 
-                // Rekod stock movement
                 StockMovement::create([
                     'product_id' => $product->id,
                     'user_id' => Auth::id(),
@@ -291,8 +292,8 @@ class EmployeeController extends Controller
             $transaction = Transaction::create([
                 'user_id' => Auth::id(),
                 'transaction_number' => 'INV-' . time(),
-                'customer_name' => 'Walk-in Customer',
-                'payment_method' => 'cash',
+                'customer_name' => $customerName,  // <-- GUNA DEFAULT
+                'payment_method' => $paymentMethod,
                 'subtotal' => $total,
                 'tax' => 0,
                 'total' => $total,
@@ -300,7 +301,6 @@ class EmployeeController extends Controller
                 'change_amount' => 0,
             ]);
 
-            // Simpan transaction items
             foreach ($cart as $id => $item) {
                 TransactionItem::create([
                     'transaction_id' => $transaction->id,
@@ -311,12 +311,11 @@ class EmployeeController extends Controller
                 ]);
             }
 
-            // Kosongkan cart
             session()->forget('cart');
 
             DB::commit();
 
-            return redirect()->route('employee.cart')->with('success', 'Payment successful! Stock are decreased.');
+            return redirect()->route('employee.cart')->with('success', 'Payment successful! Stock has been decreased.');
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->with('error', $e->getMessage());

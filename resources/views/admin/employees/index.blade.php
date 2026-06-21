@@ -8,7 +8,7 @@
 <div class="space-y-6">
     
     <div class="flex justify-between items-center">
-        <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Employee List</h2>
+        <h2 class="text-2xl font-bold mb-2 text-purple-700 dark:text-purple-300">Employee List</h2>
         <a href="{{ route('admin.employees.create') }}" 
            class="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white px-5 py-2.5 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -28,7 +28,7 @@
                         <th class="px-3 py-2 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase">Phone</th>
                         <th class="px-3 py-2 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase">Address</th>
                         <th class="px-3 py-2 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase">Joined</th>
-                        <th class="px-3 py-2 text-right text-xs font-medium text-gray-700 dark:text-gray-300 uppercase">Actions</th>
+                        <th class="px-3 py-2 text-center text-xs font-medium text-gray-700 dark:text-gray-300 uppercase">Actions</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200 dark:divide-gray-700">

@@ -7,7 +7,7 @@
     <div class="bg-purple-50 dark:bg-gray-800 rounded-2xl shadow-lg p-6">
 
         <div class="flex justify-between items-center mb-6">
-            <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Products List</h2>
+            <h2 class="text-2xl font-bold mb-2 text-purple-700 dark:text-purple-300">Products List</h2>
             <a href="{{ route('admin.products.create') }}"
                 class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-4 py-2 rounded-xl shadow-lg hover:shadow-xl transition inline-flex items-center gap-2">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

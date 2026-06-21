@@ -71,16 +71,11 @@ class TransactionController extends Controller
     {
         $month = $request->input('month', now()->format('Y-m'));
 
-        // DEBUG - Log je
-        \Log::info('Selected month: ' . $month);
-
         $transactions = Transaction::whereYear('created_at', substr($month, 0, 4))
             ->whereMonth('created_at', substr($month, 5, 2))
             ->with('items.product')
             ->orderBy('created_at', 'desc')
             ->get();
-
-        \Log::info('Transactions found: ' . $transactions->count());
 
         $totalSales = $transactions->sum('total');
         $totalItems = $transactions->sum(function ($t) {
