@@ -80,11 +80,14 @@
                                 <td class="px-6 py-4">
                                     @php
                                         $method = strtolower($transaction->payment_method ?? 'cash');
-                                        $color = match($method) {
-                                            'cash' => 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300',
-                                            'card' => 'bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300',
-                                            'qrcode' => 'bg-purple-100 text-purple-800 dark:bg-purple-900/50 dark:text-purple-300',
-                                            default => 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
+                                        $color = match ($method) {
+                                            'cash'
+                                                => 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300',
+                                            'card'
+                                                => 'bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300',
+                                            'qrcode'
+                                                => 'bg-purple-100 text-purple-800 dark:bg-purple-900/50 dark:text-purple-300',
+                                            default => 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300',
                                         };
                                     @endphp
                                     <span class="px-2 py-1 text-xs rounded-full {{ $color }}">

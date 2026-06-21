@@ -79,23 +79,17 @@ class ProductController extends Controller
 
     public function destroy($id)
     {
-        try {
-            // Force delete
-            \DB::statement('SET FOREIGN_KEY_CHECKS=0');
+        $product = Product::findOrFail($id);
 
-            // Delete transaction items
-            \DB::table('transaction_items')->where('product_id', $id)->delete();
-
-            // Delete product
-            \DB::table('products')->where('id', $id)->delete();
-
-            \DB::statement('SET FOREIGN_KEY_CHECKS=1');
-
-            return redirect()->route('admin.products')->with('success', 'Product deleted successfully');
-        } catch (\Exception $e) {
-            \DB::statement('SET FOREIGN_KEY_CHECKS=1');
-            return back()->with('error', 'Failed to delete product: ' . $e->getMessage());
+        // Delete image if exists
+        if ($product->product_picture) {
+            \Storage::disk('public')->delete($product->product_picture);
         }
+
+        // SOFT DELETE - hanya set deleted_at
+        $product->delete();
+
+        return redirect()->route('admin.products')->with('success', 'Product deleted successfully');
     }
     public function create()
     {

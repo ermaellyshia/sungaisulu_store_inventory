@@ -73,7 +73,11 @@ class TransactionController extends Controller
 
         $transactions = Transaction::whereYear('created_at', substr($month, 0, 4))
             ->whereMonth('created_at', substr($month, 5, 2))
-            ->with('items.product')
+            ->with(['items' => function ($q) {
+                $q->withTrashed();
+            }, 'items.product' => function ($q) {
+                $q->withTrashed();  // Include deleted products
+            }])
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -98,7 +102,9 @@ class TransactionController extends Controller
 
         $transactions = Transaction::whereYear('created_at', substr($month, 0, 4))
             ->whereMonth('created_at', substr($month, 5, 2))
-            ->with('items.product')
+            ->with(['items' => function ($q) {
+                $q->withTrashed();
+            }])
             ->orderBy('created_at', 'desc')
             ->get();
 
