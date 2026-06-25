@@ -1,78 +1,158 @@
-# sungaisulu_store_inventory
-Laravel inventory system for convenience store - Group Project
+# 📦 Sungai Sulu Store Inventory Management System
 
-### 1. Import Database
-- File location: `/database/convenience_store.sql`
-- Import into MySQL database named `convenience_store`
+A web-based inventory management system built with Laravel 10 for convenience stores to manage products, track stock, process sales, and generate reports.
 
-### 2. Read Handover Document
-- Full documentation: `/docs/HANDOVER.md`
-- Contains: Authentication rules, stock logic, all SQL queries
+---
 
-### 3. Default Logins
-- Admin: user_id=1, password=admin123
-- Employee: employee_id=EMP001 (no password)
-- Employee: employee_id=EMP002 (no password)
+## 📋 About The Project
 
-### 4. Key Rules
-- Current stock = SUM(quantity) FROM stock_movements
-- Positive quantity = stock in | Negative quantity = stock out
+Sungai Sulu Store Inventory Management System is a complete solution designed to replace manual paper-based inventory tracking with an automated digital system. It helps store owners track stock in real-time, receive low stock alerts, process sales efficiently, and make data-driven business decisions.
 
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+---
 
-## About Laravel
+## ✨ Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+| Feature | Description |
+|---------|-------------|
+| **🔐 Authentication** | Login with email/password, role-based access (Admin & Cashier) |
+| **📦 Product Management** | Add, edit, view, and delete products with categories |
+| **📊 Stock Management** | Real-time stock tracking with automatic updates |
+| **⚠️ Low Stock Alerts** | Automatic notifications when stock falls below reorder level |
+| **🛒 Sales Processing** | Fast checkout with automatic stock deduction |
+| **📈 Sales Reports** | Daily, weekly, and monthly sales reports |
+| **👥 Employee Management** | Manage cashier accounts (Admin only) |
+| **🗄️ Centralized Database** | All records stored securely in one place |
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+---
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## 🛠️ Built With
 
-## Learning Laravel
+| Technology | Version |
+|------------|---------|
+| [Laravel](https://laravel.com/) | 10.x |
+| [PHP](https://www.php.net/) | 8.1+ |
+| [MySQL](https://www.mysql.com/) / SQLite | 8.0 / Latest |
+| [TailwindCSS](https://tailwindcss.com/) | 3.x |
+| [Laravel Breeze](https://laravel.com/docs/10.x/starter-kits#breeze) | 10.x |
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+---
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+## 🔑 Default Login Credentials
 
-## Agentic Development
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+| Role | Email | Password |
+|------|-------|----------|
+| **Admin** | admin@example.com | password |
+| **Cashier** | cashier@example.com | password |
 
-```bash
-composer require laravel/boost --dev
 
-php artisan boost:install
+---
+
+## 📁 Database Schema
+
+| Table | Description |
+|-------|-------------|
+| `users` | Store employee/admin accounts |
+| `products` | Product information |
+| `categories` | Product categories |
+| `stock_movements` | Track stock in/out transactions |
+| `sales` | Sales transactions header |
+| `sale_items` | Sales transaction details |
+| `suppliers` | Supplier information |
+
+---
+
+## 📊 System Workflow
+
+```
+1. Admin adds product & sets stock
+   Login → Products → Add New → Fill Form → Save
+
+2. Cashier processes sale → Auto stock deduction
+   Login → New Sale → Search Product → Add to Cart → Checkout
+   ⚡ System automatically deducts stock
+
+3. Low stock alert triggered
+   Stock < Reorder Level → Alert on Admin Dashboard
+   ⚠️ Admin notified to restock
+
+4. Admin views reports
+   Login → Reports → Select Daily/Weekly/Monthly
+   📊 View sales trends and make decisions
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+---
 
-## Contributing
+## 📂 Project Structure
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```
+sungaisulu_store_inventory/
+├── app/
+│   ├── Http/
+│   │   ├── Controllers/      # Application controllers
+│   │   └── Middleware/       # Role-based access middleware
+│   └── Models/               # Eloquent models
+├── database/
+│   ├── migrations/           # Database migrations
+│   └── seeders/              # Sample data seeders
+├── resources/
+│   └── views/                # Blade templates
+├── routes/
+│   ├── web.php               # Web routes
+│   └── api.php               # API routes
+├── public/                   # Public assets
+├── .env                      # Environment configuration
+└── README.md                 # This file
+```
 
-## Code of Conduct
+---
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## 👥 Team Members
 
-## Security Vulnerabilities
+| Role | Member | Responsibilities |
+|------|--------|------------------|
+| **Project Manager** | Erma | Task management, integration, documentation |
+| **Database Manager** | Amni | Database design, migrations, models |
+| **Backend Developer** | Anis | Controllers, business logic, validation |
+| **Frontend Developer** | Aisyah| Blade templates, CSS, UI/UX |
+| **Auth & Testing** | Sarah | Authentication, roles, testing |
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+---
 
-## License
+## 🚧 Future Enhancements
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+- [ ] Barcode scanning integration
+- [ ] Mobile application
+- [ ] Supplier management module
+- [ ] Expiry date tracking
+- [ ] Predictive analytics
+- [ ] E-invoicing (email receipts)
+
+---
+
+## 📄 License
+
+This project is developed for educational purposes as part of a university project.
+
+---
+
+## 🙏 Acknowledgments
+
+- [Laravel Documentation](https://laravel.com/docs)
+- [TailwindCSS Documentation](https://tailwindcss.com/docs)
+- Dr. Salem Abdullah Salem Garfan
+
+---
+
+## 📬 Contact
+
+**Project Team**
+
+- **GitHub:** Amni(shark-ftw)
+- **Email:** d20231106400@siswwa.upsi.edu.my
+
+
+---
+
