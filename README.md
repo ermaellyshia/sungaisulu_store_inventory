@@ -1,17 +1,17 @@
-# 📦 Sungai Sulu Store Inventory Management System
+#  Sungai Sulu Store Inventory Management System
 
 A web-based inventory management system built with Laravel 10 for convenience stores to manage products, track stock, process sales, and generate reports.
 
 ---
 
-## 📋 About The Project
+##  About The Project
 
 Sungai Sulu Store Inventory Management System is a complete solution designed to replace manual paper-based inventory tracking with an automated digital system. It helps store owners track stock in real-time, receive low stock alerts, process sales efficiently, and make data-driven business decisions.
 
 
 ---
 
-## ✨ Features
+##  Features
 
 | Feature | Description |
 |---------|-------------|
@@ -26,7 +26,7 @@ Sungai Sulu Store Inventory Management System is a complete solution designed to
 
 ---
 
-## 🛠️ Built With
+##  Built With
 
 | Technology | Version |
 |------------|---------|
@@ -39,7 +39,7 @@ Sungai Sulu Store Inventory Management System is a complete solution designed to
 ---
 
 
-## 🔑 Default Login Credentials
+##  Default Login Credentials
 
 
 | Role | Email | Password |
@@ -50,7 +50,7 @@ Sungai Sulu Store Inventory Management System is a complete solution designed to
 
 ---
 
-## 📁 Database Schema
+##  Database Schema
 
 | Table | Description |
 |-------|-------------|
@@ -64,7 +64,7 @@ Sungai Sulu Store Inventory Management System is a complete solution designed to
 
 ---
 
-## 📊 System Workflow
+##  System Workflow
 
 ```
 1. Admin adds product & sets stock
@@ -85,7 +85,7 @@ Sungai Sulu Store Inventory Management System is a complete solution designed to
 
 ---
 
-## 📂 Project Structure
+##  Project Structure
 
 ```
 sungaisulu_store_inventory/
@@ -109,7 +109,7 @@ sungaisulu_store_inventory/
 
 ---
 
-## 👥 Team Members
+##  Team Members
 
 | Role | Member | Responsibilities |
 |------|--------|------------------|
@@ -121,7 +121,7 @@ sungaisulu_store_inventory/
 
 ---
 
-## 🚧 Future Enhancements
+##  Future Enhancements
 
 - [ ] Barcode scanning integration
 - [ ] Mobile application
@@ -132,13 +132,13 @@ sungaisulu_store_inventory/
 
 ---
 
-## 📄 License
+##  License
 
 This project is developed for educational purposes as part of a university project.
 
 ---
 
-## 🙏 Acknowledgments
+##  Acknowledgments
 
 - [Laravel Documentation](https://laravel.com/docs)
 - [TailwindCSS Documentation](https://tailwindcss.com/docs)
@@ -146,7 +146,7 @@ This project is developed for educational purposes as part of a university proje
 
 ---
 
-## 📬 Contact
+##  Contact
 
 **Project Team**
 
